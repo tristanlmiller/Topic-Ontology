@@ -20,7 +20,7 @@ Later, we will have to adjust the code for Wikipedia.
 ### Importing Packages
 import pandas
 import numpy
-import matplotlib as plt
+import matplotlib.pyplot as plt
 from bs4 import BeautifulSoup
 import re
 from nltk.corpus import stopwords #assuming nltk is already installed
@@ -29,9 +29,13 @@ import time
 from sklearn.feature_extraction.text import CountVectorizer
 
 ### Initialization of movie review data
+
 def initialize_movie_reviews():
     """Executes all initializating procedures below.
     Returns bag of words and vocabulary as tuple"""
+    # to execute:
+    # bag_of_reviews, vocab = initialize_movie_reviews()
+    
     movie_reviews = get_movie_data()
     clean_reviews = clean_all_reviews(movie_reviews)
     return create_bag_of_reviews( clean_reviews )
@@ -85,4 +89,21 @@ def create_bag_of_reviews( clean_reviews ):
 
     bag_of_reviews = bag_of_reviews.toarray()
     return ( bag_of_reviews , vectorizer.get_feature_names() )
+    
+    
+### Visualizing word frequency
+    
+def plot_word_distribution(bag_of_words,column,vocab):
+    "Plots the cumulative frequency of a particular word"
+    wordCol = bag_of_words[:,column]
+    wordCol.sort()
+    wordCol = wordCol[::-1]
+    wordCol = pandas.core.series.Series(wordCol)
+    plt.figure(figsize=(6,4))
+    fig, ax = plt.subplots()
+    wordCol.plot(kind='line')
+    wordCol += 1
+    #ax.loglog()
+    #I really want this to be log-log, but I haven't gotten it yet -Tristan
+    plt.title('Distrubution of "%s"' % vocab[column])
     
