@@ -21,6 +21,12 @@ pages = [child[0].text for child in root]
 colons = [title for title in pages if ':' in title]
 len(colons)
 
+for child in root:
+    if child[1]=='0': #get articles
+        for elem in child.iter(tag='{http://www.mediawiki.org/xml/export-0.10/}text'): #get article text
+            text = elem.text
+    
+
 #for child in root:
     #print(child.tag, child.attrib)
     #print(child.attrib)
