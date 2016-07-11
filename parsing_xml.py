@@ -50,7 +50,7 @@ def get_articles(root):
             if redirect is None:
                 # Remove articles with fewer than 300 characters
                 # Yes, this does slow it down a lot.
-                if( len(root[i][0].text) >= 300 ):
+                if( len(root[i].find('{http://www.mediawiki.org/xml/export-0.10/}revision').find('{http://www.mediawiki.org/xml/export-0.10/}text').text) >= 300 ):
                     indices.append(i)
     return indices
 
