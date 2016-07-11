@@ -14,6 +14,7 @@ import xml.etree.ElementTree as ET
 import matplotlib.pyplot as plt
 import numpy
 import random
+import pandas as pd
 
 def run_this():
     global root
@@ -29,6 +30,8 @@ def run_this():
     titles = get_titles(root,indices)
     text = get_text(root,indices)
     """end section"""
+    data=get_dataframe(titles, text)
+
 
 def parse_file():
     tree = ET.parse('simplewiki-20160701-pages-articles-multistream.xml')
@@ -36,7 +39,7 @@ def parse_file():
 
 def get_titles(root,indices):
     return [root[i][0].text for i in indices ]
-    
+
 def get_articles(root):
     indices = []
     for i in range(1,len(root.getchildren())):
@@ -57,7 +60,13 @@ def get_text(root,article_indices):
         for textnode in child.iter(tag ='{http://www.mediawiki.org/xml/export-0.10/}text'):
             text.append(textnode.text)
     return text
-    
+
+def get_dataframe(title_list, text_list):
+    data=pd.Dataframe(index=range(10000), columns=['title', 'text'])
+    data['title']=title_list
+    data['text']=text_list
+    return data
+
 """A few additional functions to characterize the articles"""
 def get_length(text):
     #to execute:
