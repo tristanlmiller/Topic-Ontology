@@ -21,9 +21,10 @@ def run_this():
     global indices
     global titles
     global text
+    global data
     """This section contains the code to be executed"""
     root = parse_file()
-    indices = get_article_indices(root)
+    indices = get_articles(root)
     random.seed(8685)
     indices = random.sample(indices,10000)
     indices.sort()
@@ -62,7 +63,7 @@ def get_text(root,article_indices):
     return text
 
 def get_dataframe(title_list, text_list):
-    data=pd.Dataframe(index=range(10000), columns=['title', 'text'])
+    data=pd.DataFrame(index=range(10000), columns=['title', 'text'])
     data['title']=title_list
     data['text']=text_list
     return data
@@ -72,7 +73,7 @@ def get_length(text):
     #to execute:
     #(char_count, log_char, word_count, log_word) = get_length(text)
     char_count = [len(a) for a in text]
-    log_char = numpy.log10(text_length)
+    log_char = numpy.log10(char_count)
     word_count = [len(a.split()) for a in text]
     log_word = numpy.log10(word_count)
     plt.hist(log_word)
