@@ -6,8 +6,9 @@ Created on Sun Jul 10 15:17:53 2016
 
 run_this will load the Wikipedia xml file as an ElementTree,
 find all the non-redirect articles with at least 300 characters,
-take a reproducibly random subset of 10,000 articles,
-get the titles and text of these articles
+take a reproducible random subset of 10000 articles,
+get the titles and text of these articles,
+and return a pandas dataframe including position in the file
 """
 
 import xml.etree.ElementTree as ET
@@ -16,26 +17,20 @@ import numpy
 import random
 import pandas as pd
 
-def run_this():
-    global root
-    global indices
-    global titles
-    global text
-    global data
-    """This section contains the code to be executed"""
-    root = parse_file()
+def xml_to_df(xmlname='simplewiki-20160701-pages-articles-multistream.xml', nsample=10000):
+    # converts MediaWiki xml to dataframe of indices, titles, and text 
+    root = parse_file(xmlname)
     indices = get_articles(root)
     random.seed(8685)
-    indices = random.sample(indices,10000)
+    indices = random.sample(indices,nsample)
     indices.sort()
     titles = get_titles(root,indices)
     text = get_text(root,indices)
-    """end section"""
-    data=get_dataframe(titles, text)
+    df = get_dataframe(indices,titles, text)
+    return df
 
-
-def parse_file():
-    tree = ET.parse('simplewiki-20160701-pages-articles-multistream.xml')
+def parse_file(filename):
+    tree = ET.parse(filename)
     return tree.getroot()
 
 def get_titles(root,indices):
@@ -62,8 +57,9 @@ def get_text(root,article_indices):
             text.append(textnode.text)
     return text
 
-def get_dataframe(title_list, text_list):
-    data=pd.DataFrame(index=range(10000), columns=['title', 'text'])
+def get_dataframe(indices, title_list, text_list):
+    data=pd.DataFrame(index=range(10000), columns=['index','title', 'text'])
+    data['index']=indices
     data['title']=title_list
     data['text']=text_list
     return data
