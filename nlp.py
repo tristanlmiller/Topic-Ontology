@@ -56,7 +56,7 @@ def remove_links( raw_text ):
     #links to images, categories, or the like.  They are removed entirely.
     text_nolinks = re.sub("\[\[[^\[\]]*\]\]","",text_nolinks)
     #step 4: External links are of format [external_link link text].  These are replaced with link text
-    text_nolinks = re.sub("\[\s*[^\[\]]+\s*([^\[\]]*)\]","",text_nolinks)
+    text_nolinks = re.sub("\[\s*[^\[\]]+\s*([^\[\]]*)\]","\\1",text_nolinks)
     #step 5: remove anything in {{ }}.  These are usually used for references
     #do it twice, because sometimes you have something like {{text {{text}} text}}
     text_nolinks = re.sub("\{\{[^\{\}]*\}\}","",text_nolinks)
