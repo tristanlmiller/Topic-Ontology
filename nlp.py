@@ -62,5 +62,6 @@ def remove_links( raw_text ):
     text_nolinks = re.sub("\{\{[^\{\}]*\}\}","",text_nolinks)
     text_nolinks = re.sub("\{\{[^\{\}]*\}\}","",text_nolinks)
     #step 6: remove any html tags inside < >
-    text_nolinks = re.sub("<[^<>]*>","",text_nolinks)
+    #Ah, apparently this step is redundant with BeautifulSoup.
+    #text_nolinks = re.sub("<[^<>]*>","",text_nolinks)
     return text_nolinks
