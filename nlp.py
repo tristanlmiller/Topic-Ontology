@@ -20,6 +20,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 
 def proc_text(df = parsing_xml.xml_to_df()):
     df['links'] = df['text'].apply(lambda x: get_links(x) )
+    df['categories'] = df['text'].apply(lambda x: get_categories(x) )
     df['process'] = df['text'].apply(lambda x: para_to_words(remove_links(x)) )
     #old version:
     #df['text_noim'] = df['text'].apply(lambda x: re.sub("Category:","",re.sub("\[\[File:[\w+\s+\S+]+\|","",x)))
@@ -45,6 +46,9 @@ def get_links( raw_text ):
     #put links in lower case
     links = [link.lower() for link in links]
     return links
+
+def get_categories( raw_text ):
+    return re.findall("\[\[Category:([^\[\]\|]*)\|?[^\[\]]*\]\]",raw_text)
 
 def remove_links( raw_text ):
     #Here I'm trying to preserve the text that is in the links
