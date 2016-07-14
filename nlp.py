@@ -10,13 +10,13 @@ processing data in pandas data frame
 import parsing_xml
 import pandas
 import numpy
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 from bs4 import BeautifulSoup
 import re
 from nltk.corpus import stopwords #assuming nltk is already installed
 from nltk import PorterStemmer
-import time
-from sklearn.feature_extraction.text import CountVectorizer
+#import time
+#from sklearn.feature_extraction.text import CountVectorizer
 
 def proc_text(df = parsing_xml.xml_to_df()):
     df['links'] = df['text'].apply(lambda x: get_links(x) )
