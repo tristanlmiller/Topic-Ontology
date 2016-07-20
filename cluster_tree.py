@@ -6,6 +6,8 @@ Created on Tue Jul 19 14:02:10 2016
 
 I'm writing functions related to the tree output of agglomerative clustering
 """
+import numpy as np
+from scipy.spatial.distance import euclidean
 
 #sklearn's agglomerative clustering returns trees in a weird format
 #here I convert to the more intuitive format, where each node is a list of its children
@@ -54,6 +56,9 @@ class TreeNode(object):
     def __setitem__(self,key,value):
         self.children[key] = value
         
+    def __delitem__(self,key):
+        del self.children[key]
+        
     def __len__(self):
         return len(self.children)
     
@@ -93,6 +98,14 @@ class TreeNode(object):
         tree_string += ';'
         return tree_string
     
+    #Join this node with one of its children.
+    #The data in the child node will be used to overwrite this one.
+    def join_child(self,child_index):
+        joined_child = self[child_index]
+        del self[child_index]
+        for child in joined_child.children:
+            self.append(child)
+        self.data = joined_child.data
         
 #Translate instead to my TreeNode object
 def tree_to_nodes(children,num_docs):
@@ -153,5 +166,103 @@ def get_label_tree(root):
                 node.data = my_label
     return label_tree
 
+#Returns an ndarray containing all the cluster means
+#Also returns the number of docs within each cluster
+def get_means(c_labels, feature_matrix):
+    num_clusters = max(c_labels)+1
+    num_terms = feature_matrix.shape[1]
+    num_docs = feature_matrix.shape[0]
+    
+    #each row of cm corresponds to a cluster
+    #and each column a term
+    cm=np.zeros((num_clusters,num_terms))
+    docs_in_cluster = np.zeros((num_clusters))
+    
+    for doc_index in range(num_docs):
+        cm[c_labels[doc_index],:]+=feature_matrix[doc_index,:]
+        docs_in_cluster[c_labels[doc_index]] += 1
+    for cluster_index in range(num_clusters):
+        cm[cluster_index,:] /= docs_in_cluster[cluster_index]
+    return cm, docs_in_cluster
+
+#Returns the euclidean distance between two cluster means
+def get_dist(cluster_means,c1,c2):
+    return euclidean(cluster_means[c1,:],cluster_means[c2,:])
+
+#returns the mean of a branch, along with the number of documents within
+#The branch is understood to be a branch in the label_tree
+def get_branch_mean(branch,cm,docs_in_cluster):
+    if len(branch) == 0:
+        #If this is a leaf, the mean can just be looked up in the table.
+        return cm[branch.data,:], docs_in_cluster[branch.data]
+    else:
+        #If this is not a leaf, take a weighted average of each of its children
+        total_docs = 0
+        my_mean = np.zeros(cm.shape[1])
+        for child in branch.children:
+            child_mean, child_docs = get_branch_mean(child,cm,docs_in_cluster)
+            my_mean += child_mean*child_docs
+            total_docs += child_docs
+        my_mean /= total_docs
+        return my_mean, total_docs
+
+#Given two branches in the label tree, determines the distance between their means
+def branch_mean_distance(branch1,branch2,cm,docs_in_cluster):
+    #First find the mean of each branch
+    mean1,docs1 = get_branch_mean(branch1,cm,docs_in_cluster)
+    mean2,docs2 = get_branch_mean(branch2,cm,docs_in_cluster)
+    return euclidean(mean1,mean2)
+    
+#This goes through a label tree, and collapses nodes according to the following rule:
+#A node is collapsed with a non-leaf child if its grandchildren are no closer to each other
+#than its children are to the grandchildren.
+def collapse_label_tree(label_tree,cm,docs_in_cluster,tolerance):
+    collapsed_tree = label_tree.copy()
+    #Iterate through the nodes backwards
+    #so that children are always considered before parents
+    for parent in collapsed_tree.iter_nodes()[::-1]:
+        #iterate through children, noting that the children may change throughout the loop
+        child_index = 0
+        while(child_index < len(parent)):
+            child = parent[child_index]
+            #only consider non-leaf children
+            if(len(child) > 0):
+                #compute grandchild_separation, the min distance among the child's branches
+                #In principle, there may be more grandchildren.  Check each pair
+                grandchild_separation = np.inf
+                for grandchild1 in child.children:
+                    for grandchild2 in child.children:
+                        if grandchild2 != grandchild1:
+                            grandchild_separation = min([branch_mean_distance(grandchild2,grandchild1,cm,docs_in_cluster),grandchild_separation])
+                    
+                #now, compute child_separation, the min distance between a single child
+                #and a single grand child
+                child_separation = np.inf
+                for child2 in parent.children:
+                    for grandchild in child.children:
+                        if child2 != child:
+                            child_separation = min([branch_mean_distance(child2,grandchild,cm,docs_in_cluster),child_separation])
+                
+                #now we compare child_separation and grandchild_separation
+                if grandchild_separation*(1+tolerance) > child_separation:
+                    #delete the child from the parent's list of children
+                    del parent[child_index]
+                    #add the grandchildren to the list of children,
+                    #inserting them in the right location
+                    for grandchild in child.children:
+                        parent.children.insert(child_index,grandchild)
+                else:
+                    #move on to the next child
+                    child_index += 1
+            else:
+                #If this child is a leaf, move on.
+                child_index += 1
+                    
+    return collapsed_tree
+    
+    
+    
+    
+    
     
     
