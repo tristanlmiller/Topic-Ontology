@@ -25,18 +25,19 @@ def xml_to_df(xmlname='enwiki-20160701-pages-articles-multistream.xml', nsample=
     indices = random.sample(indices,nsample)
     indices.sort()
     indices = [str(index) for index in indices] #converting to string, to be compared with xml
-    titles = get_titles(xmlname,indices)
-    text = get_text(xmlname,indices)
+    titles, text = get_titles_text(xmlname,indices)
     df = get_dataframe(indices,titles, text)
     return df
 
-def get_titles(xmlname,indices):
+def get_titles_text(xmlname,indices):
     titles = []
+    text = []
     for event, element in etree.iterparse(xmlname, tag="{http://www.mediawiki.org/xml/export-0.10/}page"):
         if element.find("{http://www.mediawiki.org/xml/export-0.10/}id").text in indices:
             titles.append(element.find("{http://www.mediawiki.org/xml/export-0.10/}title").text)
+            text.append(element.find("{http://www.mediawiki.org/xml/export-0.10/}revision").find("{http://www.mediawiki.org/xml/export-0.10/}text").text)
         element.clear()
-    return titles
+    return titles, text
 
 def get_articles(xmlname):
     indices = []
@@ -47,14 +48,6 @@ def get_articles(xmlname):
                 indices.append(element.find("{http://www.mediawiki.org/xml/export-0.10/}id").text) #yes, this will be a string corresponding to the id of the article
         element.clear()
     return indices
-
-def get_text(root,article_indices):
-    text = []
-    for event, element in etree.iterparse(xmlname, tag="{http://www.mediawiki.org/xml/export-0.10/}page"):
-        if element.find("{http://www.mediawiki.org/xml/export-0.10/}id").text in indices:
-            text.append(element.find("{http://www.mediawiki.org/xml/export-0.10/}revision").find("{http://www.mediawiki.org/xml/export-0.10/}text").text)
-        element.clear()
-    return text
 
 def get_dataframe(indices, title_list, text_list):
     data=pd.DataFrame(index=len(indices), columns=['index','title', 'text'])
