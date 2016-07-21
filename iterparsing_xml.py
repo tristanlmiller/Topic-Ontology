@@ -20,22 +20,23 @@ import pandas as pd
 
 def xml_to_df(xmlname='enwiki-20160701-pages-articles-multistream.xml', nsample=100000):
     # converts MediaWiki xml to dataframe of indices, titles, and text 
-    #root = parse_file(xmlname)
-    indices = [int(index) for index in get_articles(xmlname)]
+    indices = [int(index) for index in get_articles(xmlname)] # get indices of articles as list of ints
     random.seed(8685)
     indices = random.sample(indices,nsample)
     indices.sort()
+    indices = [str(index) for index in indices] #converting to string, to be compared with xml
     titles = get_titles(xmlname,indices)
     text = get_text(xmlname,indices)
     df = get_dataframe(indices,titles, text)
     return df
 
-#def parse_file(filename):
-#    tree = ET.parse(filename)
-#    return tree.getroot()
-
 def get_titles(xmlname,indices):
-    return [root[i][0].text for i in indices ]
+    titles = []
+    for event, element in etree.iterparse(xmlname, tag="{http://www.mediawiki.org/xml/export-0.10/}page"):
+        if element.find("{http://www.mediawiki.org/xml/export-0.10/}id").text in indices:
+            titles.append(element.find("{http://www.mediawiki.org/xml/export-0.10/}title").text)
+        element.clear()
+    return titles
 
 def get_articles(xmlname):
     indices = []
@@ -49,9 +50,10 @@ def get_articles(xmlname):
 
 def get_text(root,article_indices):
     text = []
-    for child in [root[i] for i in article_indices]:
-        for textnode in child.iter(tag ='{http://www.mediawiki.org/xml/export-0.10/}text'):
-            text.append(textnode.text)
+    for event, element in etree.iterparse(xmlname, tag="{http://www.mediawiki.org/xml/export-0.10/}page"):
+        if element.find("{http://www.mediawiki.org/xml/export-0.10/}id").text in indices:
+            text.append(element.find("{http://www.mediawiki.org/xml/export-0.10/}revision").find("{http://www.mediawiki.org/xml/export-0.10/}text").text)
+        element.clear()
     return text
 
 def get_dataframe(indices, title_list, text_list):
