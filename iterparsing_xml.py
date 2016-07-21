@@ -27,6 +27,7 @@ def xml_to_df(xmlname='enwiki-20160701-pages-articles-multistream.xml', nsample=
     indices = [str(index) for index in indices] #converting to string, to be compared with xml
     titles, text = get_titles_text(xmlname,indices)
     df = get_dataframe(indices,titles, text)
+    df.to_pickle(xmlname+'.pkl')
     return df
 
 def get_titles_text(xmlname,indices):
