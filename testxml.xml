@@ -35,7 +35,7 @@
     </siteinfo>
     <page>
         <title>April</title>
-        <ns>0</ns>
+        <ns>0A</ns>
         <id>1</id>
         <revision>
             <id>5356342</id>
@@ -103,4 +103,26 @@
         <sha1>gxp0vuc2m9um5rwq6eslu6pjrt5b7ta</sha1>
     </revision>
 </page>
+<page>
+    <title>Albigensian</title>
+    <ns>0</ns>
+    <id>24</id>
+    <redirect title="Catharism" />
+    <revision>
+        <id>973365</id>
+        <parentid>36379</parentid>
+        <timestamp>2008-07-19T17:11:13Z</timestamp>
+        <contributor>
+            <username>タチコマ robot</username>
+            <id>11594</id>
+        </contributor>
+        <minor />
+        <comment>Robot: Fixing double redirect</comment>
+        <model>wikitext</model>
+        <format>text/x-wiki</format>
+        <text xml:space="preserve">#REDIRECT [[Catharism]]</text>
+        <sha1>8pqvcracmfabxz3mb0j123ar2wq4ww7</sha1>
+    </revision>
+</page>
+
 </mediawiki>
