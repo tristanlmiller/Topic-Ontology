@@ -51,7 +51,7 @@ def get_articles(xmlname):
     return indices
 
 def get_dataframe(indices, title_list, text_list):
-    data=pd.DataFrame(index=len(indices), columns=['index','title', 'text'])
+    data=pd.DataFrame(index=range(len(indices)), columns=['index','title', 'text'])
     data['index']=indices
     data['title']=title_list
     data['text']=text_list
