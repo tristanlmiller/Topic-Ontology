@@ -17,6 +17,7 @@ import matplotlib.pyplot as plt
 import numpy
 import random
 import pandas as pd
+import wikipedia as wiki
 
 def xml_to_df(xmlname='enwiki-20160701-pages-articles-multistream.xml', nsample=100000):
     # converts MediaWiki xml to dataframe of indices, titles, and text 
@@ -33,10 +34,14 @@ def xml_to_df(xmlname='enwiki-20160701-pages-articles-multistream.xml', nsample=
 def get_titles_text(xmlname,indices):
     titles = []
     text = []
+    links = []
     for event, element in etree.iterparse(xmlname, tag="{http://www.mediawiki.org/xml/export-0.10/}page"):
         if element.find("{http://www.mediawiki.org/xml/export-0.10/}id").text in indices:
-            titles.append(element.find("{http://www.mediawiki.org/xml/export-0.10/}title").text)
-            text.append(element.find("{http://www.mediawiki.org/xml/export-0.10/}revision").find("{http://www.mediawiki.org/xml/export-0.10/}text").text)
+            title = element.find("{http://www.mediawiki.org/xml/export-0.10/}title")
+            titles.append(title.text)
+            page = wiki.page(title)
+            text.append(page.summary)
+            links.append(page.links)
         element.clear()
     return titles, text
 
@@ -50,11 +55,10 @@ def get_articles(xmlname):
         element.clear()
     return indices
 
-def get_dataframe(indices, title_list, text_list):
-    data=pd.DataFrame(index=range(len(indices)), columns=['index','title', 'text'])
+def get_dataframe(indices, title_list):
+    data=pd.DataFrame(index=range(len(indices)), columns=['index','title'])
     data['index']=indices
     data['title']=title_list
-    data['text']=text_list
     return data
 
 """A few additional functions to characterize the articles"""
