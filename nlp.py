@@ -30,6 +30,9 @@ def proc_text(df = parsing_xml.xml_to_df()):
 
 def para_to_words( raw_text ):
     rev_text = BeautifulSoup(raw_text,"lxml").get_text()
+    #Extract intro only.  Needs to be done right here, after html is removed,
+    #but before punctuation is removed.    
+    rev_text = re.sub("(=[.\n]*)","",rev_text)
     letters_only = re.sub("[^a-zA-Z]", " ", rev_text)
     words = letters_only.lower().split()
     stops = set(stopwords.words("english"))
@@ -62,15 +65,15 @@ def remove_links( raw_text ):
     #step 4: External links are of format [external_link link text].  These are replaced with link text
     text_nolinks = re.sub("\[\s*[^\[\]\s]+\s*([^\[\]]*)\]","\\1",text_nolinks)
     #step 5: remove anything in {{ }}.  These are usually used for references
-    #do it twice, because sometimes you have something like {{text {{text}} text}}
-    text_nolinks = re.sub("\{\{[^\{\}]*\}\}","",text_nolinks)
-    text_nolinks = re.sub("\{\{[^\{\}]*\}\}","",text_nolinks)
-    #step 6: remove any html tags inside < >
-    #Ah, apparently this step is redundant with BeautifulSoup.
-    #text_nolinks = re.sub("<[^<>]*>","",text_nolinks)
+    #These are sometimes nested, so repeat it until they're all gone.
+    while(re.search("\{\{[^\{\}]*\}\}",text_nolinks) is not None):
+        text_nolinks = re.sub("\{\{[^\{\}]*\}\}","",text_nolinks)
+    #step 6: (removed)
     #step 7: Remove code for tables.  Often each new line for a table begins with {| or | or !
     text_nolinks = re.sub("\n\{?\|.*","",text_nolinks)
     text_nolinks = re.sub("\n!.*","",text_nolinks)
+    #Step 7.5: remove bullet points
+    text_nolinks = re.sub("\n\*.*","",text_nolinks)
     #step 8: Remove references to external links within <ref> tags
     text_nolinks = re.sub("<ref[^<]*</ref>","",text_nolinks)
     return text_nolinks
