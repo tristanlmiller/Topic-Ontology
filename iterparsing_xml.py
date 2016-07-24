@@ -18,16 +18,20 @@ import numpy
 import random
 import pandas as pd
 import wikipedia as wiki
+import sys
+import datetime
 
 def xml_to_df(xmlname='enwiki-20160701-pages-articles-multistream.xml', nsample=100000):
     # converts MediaWiki xml to dataframe of indices, titles, and text 
+    with open("iterparsing_xml.log", "a") as logfile:
+        logfile.write(str(datetime.datetime.today())+'\n')
     indices = [int(index) for index in get_articles(xmlname)] # get indices of articles as list of ints
     random.seed(8685)
     indices = random.sample(indices,nsample)
     indices.sort()
     indices = [str(index) for index in indices] #converting to string, to be compared with xml
-    titles, text = get_titles_text(xmlname,indices)
-    df = get_dataframe(indices,titles, text)
+    titles, text, links = get_titles_text(xmlname,indices)
+    df = get_dataframe(titles, text, links)
     df.to_pickle(xmlname+'.pkl')
     return df
 
@@ -38,12 +42,17 @@ def get_titles_text(xmlname,indices):
     for event, element in etree.iterparse(xmlname, tag="{http://www.mediawiki.org/xml/export-0.10/}page"):
         if element.find("{http://www.mediawiki.org/xml/export-0.10/}id").text in indices:
             title = element.find("{http://www.mediawiki.org/xml/export-0.10/}title")
-            titles.append(title.text)
-            page = wiki.page(title)
-            text.append(page.summary)
-            links.append(page.links)
+            try:
+                page = wiki.page(title.text)
+                text.append(page.summary)
+                titles.append(title.text)
+                links.append(page.links)
+            except Exception:
+                with open("iterparsing_xml.log", "a") as logfile:
+                    logfile.write(title.text + " : does not appear to have viable summary. Maybe it's a redirect?\n")
+                pass
         element.clear()
-    return titles, text
+    return titles, text, links
 
 def get_articles(xmlname):
     indices = []
@@ -55,10 +64,11 @@ def get_articles(xmlname):
         element.clear()
     return indices
 
-def get_dataframe(indices, title_list):
-    data=pd.DataFrame(index=range(len(indices)), columns=['index','title'])
-    data['index']=indices
-    data['title']=title_list
+def get_dataframe(titles, text, links):
+    data=pd.DataFrame(index=range(len(titles)), columns=['title','text','links'])
+    data['title']=titles
+    data['text']=text
+    data['links']=links
     return data
 
 """A few additional functions to characterize the articles"""
