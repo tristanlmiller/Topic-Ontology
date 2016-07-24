@@ -33,11 +33,11 @@ def api_to_df(titlefile='en_wikipedia_titles.pkl', nsample=100000):
     df.to_pickle(titlefile+'_df.pkl')
     return df
 
-def get_text(titles):
+def get_text(input_titles):
     titles = []
     text = []
     links = []
-    for title in titles: 
+    for title in input_titles: 
         try:
             page = wiki.page(title)
             text.append(page.summary)
