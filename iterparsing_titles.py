@@ -45,7 +45,7 @@ def get_text(input_titles):
             links.append(page.links)
         except Exception:
             with open("iterparsing_titles.log", "a") as logfile:
-                logfile.write(title.text + " : does not appear to have viable summary. Maybe it's a stub?\n")
+                logfile.write(title + " : does not appear to have viable summary. Maybe it's a stub?\n")
             pass
     return titles, text, links
 
