@@ -58,6 +58,34 @@ class Iterative_KMeans:
                 titles.append(self.dataframe['title'][i])
         return titles
 
+    def get_cm(self, label, final_labels): #return cm in feature space of all points in cluter labeled by label
+        cm=[0]*shape.self.feature_matrix[1]
+        count=0
+        for i in range(len(final_labels)):
+            if final_labels[i]==label:
+                cm+=self.feature_matrix(i, :).toarray() #if matrix is sparse
+                count+=1
+        if count==0:
+            print('Warning: Cluster '+str(label)+' is empty')
+            return 0
+        else:
+        return cm/count
+
+
+    def get_cm_dict(self, final_labels): #returns a dictionary with entries of the form {(3,4): cm of cluster (3,4)}
+        cm={}
+        for label in set(final_labels): #iterate over distinct labels
+            cm[label]=self.get_cm(label, final_labels)
+        return cm
+
+    def get_nearest_cm(self,feature_vector, cm_dict): #given feature vector not in data set, finds closest cluster center
+        min_dist=float('inf')
+        for label in cm_dict.keys:
+            if scipy.spatial.distance.euclidean(feature_vector, cm_dict[label])<min_dist:
+                min_dist=scipy.spatial.distance(feature_vector, cm_dict[label])
+                min_label=label
+        return min_label
+
         '''
         these are not strictly necessary for this implementation, but may be useful in some situations
 
@@ -111,3 +139,22 @@ class Iterative_KMeans:
 
             big_clusters=[label for label in list(sizes.keys()) if sizes[label]>=self.min_cluster_size] #update with new clusters
         return self.get_final_labels(df) #return vector of tuples
+
+
+class Cluster_Tree: #this class reads the vector of cluster labels created by Iterative_KMeans.Run() and creates a tree
+    def __init__(self, label_vector): #label vector should be a list of tuples, like the output of Iterative_KMeans.Run()
+        self.nodes=set(label_vector) #converting to a set removes redundant labels
+
+    def get_children(self,node): #return direct children of a node
+        children=[]
+        for n in self.nodes:
+            if len(n)==len(node)+1 and n[0:len(node)]==node: #children of node (3,5) are all tuples n=(3,5,x)
+                children.append(n)
+        return children
+
+    def get_all_children(self, node): #return all children, and all children of children, and...
+        children=[]
+        for n in self.nodes:
+            if n[0:len(node)]==node:
+                children.append(n)
+        return children
