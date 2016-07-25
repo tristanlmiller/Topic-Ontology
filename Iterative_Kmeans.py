@@ -19,12 +19,14 @@ from sklearn.cluster import KMeans
 
 class Iterative_KMeans:
 
-    def __init__(self, dataframe, num_clusters, feature_matrix, min_cluster_size): #note feature_matrix and dataframe must have same num of rows; also f_m should be sparse
+    def __init__(self, dataframe, num_clusters, feature_matrix, min_cluster_size, max_depth): #note feature_matrix and dataframe must have same num of rows; also f_m should be sparse
         self.dataframe = dataframe
         self.num_clusters = num_clusters
         self.feature_matrix=feature_matrix
         self.n_samples=dataframe.shape[0]
-        self.min_cluster_size=min_cluster_size
+        self.min_cluster_size=min_cluster_size #minimum size clsuter that algo will split at each iteration
+        self.max_depth=max_depth #max depth of tree
+
 
     def get_cluster_labels(self, feature_matrix, num_clusters): #performs kmeans and returns vector of labels
         kmeans=KMeans(n_clusters=num_clusters)
@@ -59,17 +61,17 @@ class Iterative_KMeans:
         return titles
 
     def get_cm(self, label, final_labels): #return cm in feature space of all points in cluter labeled by label
-        cm=[0]*shape.self.feature_matrix[1]
+        cm=[0]*self.feature_matrix.shape[1]
         count=0
         for i in range(len(final_labels)):
             if final_labels[i]==label:
-                cm+=self.feature_matrix(i, :).toarray() #if matrix is sparse
+                cm+=self.feature_matrix[i, :].toarray() #if matrix is sparse
                 count+=1
         if count==0:
             print('Warning: Cluster '+str(label)+' is empty')
             return 0
         else:
-        return cm/count
+            return cm/count
 
 
     def get_cm_dict(self, final_labels): #returns a dictionary with entries of the form {(3,4): cm of cluster (3,4)}
@@ -80,9 +82,9 @@ class Iterative_KMeans:
 
     def get_nearest_cm(self,feature_vector, cm_dict): #given feature vector not in data set, finds closest cluster center
         min_dist=float('inf')
-        for label in cm_dict.keys:
+        for label in cm_dict.keys():
             if scipy.spatial.distance.euclidean(feature_vector, cm_dict[label])<min_dist:
-                min_dist=scipy.spatial.distance(feature_vector, cm_dict[label])
+                min_dist=scipy.spatial.distance.euclidean(feature_vector, cm_dict[label])
                 min_label=label
         return min_label
 
@@ -109,7 +111,7 @@ class Iterative_KMeans:
         df['Level_0']=[(0,)]*self.n_samples #need comma for single element tuple
         big_clusters=[(0,)]
         index=df.index.values
-        while len(big_clusters)>0:
+        while len(big_clusters)>0 and level<self.max_depth:
             sizes={} #records size of each newly created cluster
             level+=1
             df['Level_'+str(level)]=df['Level_'+str(level-1)] #create new column for next level
