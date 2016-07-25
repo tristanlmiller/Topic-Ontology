@@ -28,10 +28,10 @@ def api_to_df(titlefile='en_wikipedia_titles.pkl', nsample=100000):
     titles =  get_titles(titlefile) 
     random.seed(8685)
     titles = random.sample(titles, nsample)
-    titles, text, links = get_text(titles)
-    df = get_dataframe(titles, text, links)
+    newtitles, text, links = get_text(titles)
+    df = get_dataframe(newtitles, text, links)
     df.to_pickle(titlefile+'_df.pkl')
-    return df
+    return df, newtitles, text, links
 
 def get_text(input_titles):
     titles = []
@@ -54,7 +54,7 @@ def get_titles(titlefile):
     return titles
 
 def get_dataframe(titles, text, links):
-    data=pd.DataFrame(index=range(len(titles)), columns=['title','text','links'])
+    data=pd.DataFrame(index=range(len(text)),columns=['title','text','links'])
     data['title']=titles
     data['text']=text
     data['links']=links
