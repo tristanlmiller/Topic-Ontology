@@ -168,10 +168,10 @@ class Cluster_Tree: #this class reads the vector of cluster labels created by It
         return children
 
     def get_leaves(self):
-        leaves=[]
+        leaves=set()
         for n in self.nodes:
-            if self.get_children(n)==[]:
-                leaves.append(n)
+            if self.get_children(n)==set():
+                leaves=leaves.union({n})
         return leaves
 
     def get_newick(self, root): #return representation as string of nested paranetheses; this is the format most tree visualizers want
@@ -183,10 +183,8 @@ class Cluster_Tree: #this class reads the vector of cluster labels created by It
             for child in children:
                 x=self.get_newick(child)+','
                 newick+=x
-            if len(newick)==1:
-                newick+=')'
-            else:
-                y=newick[0:len(newick)-1] #delete last character, which is a comma
-                newick=y+')'
+
+            y=newick[0:len(newick)-1] #delete last character, which is a comma
+            newick=y+')'
             newick+=str(root)
         return newick
