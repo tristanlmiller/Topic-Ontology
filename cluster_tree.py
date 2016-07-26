@@ -259,10 +259,22 @@ def collapse_label_tree(label_tree,cm,docs_in_cluster,tolerance):
                 child_index += 1
                     
     return collapsed_tree
+   
+#This function takes a label tree, and assigns each node an informative name
+def get_name_tree(label_tree,cm,docs_in_cluster,term_list):
+    name_tree = label_tree.copy()
+    #Iterate through each non-leaf, going from the top of the tree to the bottom.
+    for parent in name_tree.iter_nodes():
+        if(len(parent) > 0):
+            #Now I want to go through each child and figure out what distinguishes that child from the others
+            parent_mean,docs = get_branch_mean(parent,cm,docs_in_cluster)
+            for child in parent.children:
+                child_mean,docs = get_branch_mean(child,cm,docs_in_cluster)
+                #Just subtract the parent mean from the child mean
+                child_mean -= parent_mean
+                child.data = term_list[child_mean.argmax()]
     
-    
-    
-    
+    return name_tree
     
     
     
