@@ -22,15 +22,19 @@ import sys
 import datetime
 import pickle
 
-def api_to_df(titlefile='en_wikipedia_titles.pkl', nsample=100000): 
+def api_to_df(titlefile='en_wikipedia_titles.pkl', nsample=10000): 
     with open("iterparsing_titles.log", "a") as logfile:
         logfile.write(str(datetime.datetime.today())+'\n'+titlefile+'\n')
     titles =  get_titles(titlefile) 
     random.seed(8685)
     titles = random.sample(titles, nsample)
     newtitles, text, links = get_text(titles)
+    with open(titlefile+'_df_'+str(nsample)+'_comp.pkl','wb') as f:
+        pickle.dump(newtitles,f)
+        pickle.dump(text,f)
+        pickle.dump(links,f)
     df = get_dataframe(newtitles, text, links)
-    df.to_pickle(titlefile+'_df.pkl')
+    df.to_pickle(titlefile+'_df_'+str(nsample)+'.pkl')
     return df, newtitles, text, links
 
 def get_text(input_titles):
