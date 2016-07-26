@@ -16,3 +16,8 @@ with open('/Users/diyadas/cdips/Topic-Ontology/SimpleWikiTree.txt','rb') as f:
 t = Tree( treestr )
 
 t.show()
+
+## compare to
+
+t = Tree( "((a,b),c);" )
+t.show()
