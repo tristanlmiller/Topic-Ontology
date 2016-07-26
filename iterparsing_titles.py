@@ -24,7 +24,7 @@ import pickle
 
 def api_to_df(titlefile='en_wikipedia_titles.pkl', nsample=10000): 
     with open("iterparsing_titles.log", "a") as logfile:
-        logfile.write(str(datetime.datetime.today())+'\n'+titlefile+'\n'+str(nsample))
+        logfile.write(str(datetime.datetime.today())+'\n'+titlefile+'\n'+str(nsample)+'\n')
     titles =  get_titles(titlefile) 
     random.seed(8685)
     titles = random.sample(titles, nsample)
@@ -36,7 +36,7 @@ def api_to_df(titlefile='en_wikipedia_titles.pkl', nsample=10000):
     df = get_dataframe(newtitles, text, links)
     df.to_pickle(titlefile+'_df_'+str(nsample)+'.pkl')
     with open("iterparsing_titles.log", "a") as logfile:
-        logfile.write("Complete at " + str(datetime.datetime.today()))
+        logfile.write("Complete at " + str(datetime.datetime.today()) + '\n')
     return df, newtitles, text, links
 
 def get_text(input_titles):
@@ -54,7 +54,7 @@ def get_text(input_titles):
             counter += 1
             if counter % 100 == 0:
                 with open("iterparsing_titles.log", "a") as logfile:
-                    logfile.write(str(counter) + " titles have data at " + str(datetime.datetime.today()))
+                    logfile.write(str(counter) + " titles have data at " + str(datetime.datetime.today())+'\n')
         except Exception:
             with open("iterparsing_titles.log", "a") as logfile:
                 logfile.write(title + " : does not appear to have viable summary or internal links. Maybe it's a stub?\n")
