@@ -24,7 +24,7 @@ import pickle
 
 def api_to_df(titlefile='en_wikipedia_titles.pkl', nsample=10000): 
     with open("iterparsing_titles.log", "a") as logfile:
-        logfile.write(str(datetime.datetime.today())+'\n'+titlefile+'\n')
+        logfile.write(str(datetime.datetime.today())+'\n'+titlefile+'\n'+nsample)
     titles =  get_titles(titlefile) 
     random.seed(8685)
     titles = random.sample(titles, nsample)
@@ -35,21 +35,29 @@ def api_to_df(titlefile='en_wikipedia_titles.pkl', nsample=10000):
         pickle.dump(links,f)
     df = get_dataframe(newtitles, text, links)
     df.to_pickle(titlefile+'_df_'+str(nsample)+'.pkl')
+    with open("iterparsing_titles.log", "a") as logfile:
+        logfile.write("Complete at " + str(datetime.datetime.today()))
     return df, newtitles, text, links
 
 def get_text(input_titles):
     titles = []
     text = []
     links = []
+    counter = 0
     for title in input_titles: 
         try:
             page = wiki.page(title)
+            plinks = page.links
             text.append(page.summary)
             titles.append(title)
-            links.append(page.links)
+            links.append(plinks)
+            counter += 1
+            if counter % 100 == 0:
+                with open("iterparsing_titles.log", "a") as logfile:
+                    logfile.write(str(counter) + " titles have data at " + str(datetime.datetime.today()))
         except Exception:
             with open("iterparsing_titles.log", "a") as logfile:
-                logfile.write(title + " : does not appear to have viable summary. Maybe it's a stub?\n")
+                logfile.write(title + " : does not appear to have viable summary or internal links. Maybe it's a stub?\n")
             pass
     return titles, text, links
 
