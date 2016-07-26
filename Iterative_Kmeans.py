@@ -144,19 +144,47 @@ class Iterative_KMeans:
 
 
 class Cluster_Tree: #this class reads the vector of cluster labels created by Iterative_KMeans.Run() and creates a tree
-    def __init__(self, label_vector): #label vector should be a list of tuples, like the output of Iterative_KMeans.Run()
-        self.nodes=set(label_vector) #converting to a set removes redundant labels
+    def __init__(self, label_vector):
+        self.nodes=set(label_vector)#the label vector might not contain all internal nodes, since it only records the *final* cluster label of each article
+        for node in self.nodes: #add internal nodes not in label_vector
+            for i in range(len(node)):
+                self.nodes=self.nodes.union({node[0:i]})
 
-    def get_children(self,node): #return direct children of a node
-        children=[]
+    def get_root(self):
+        return (0,)
+
+    def get_children(self,node):
+        children=set()
         for n in self.nodes:
-            if len(n)==len(node)+1 and n[0:len(node)]==node: #children of node (3,5) are all tuples n=(3,5,x)
-                children.append(n)
+            if n[0:len(node)]==node and len(n)==len(node)+1: #children of (3,5) are all nodes of form (3,5,x)
+                children=children.union({n})
         return children
 
-    def get_all_children(self, node): #return all children, and all children of children, and...
-        children=[]
+    def get_all_children(self, node): #return children, and childrenof children, and...
+        children=set()
         for n in self.nodes:
             if n[0:len(node)]==node:
-                children.append(n)
+               children=children.union({n})
         return children
+
+    def get_leaves(self):
+        leaves=set()
+        for n in self.nodes:
+            if self.get_children(n)==set():
+                leaves=leaves.union({n})
+        return leaves
+
+    def get_newick(self, root): #return representation as string of nested paranetheses; this is the format most tree visualizers want
+        children=self.get_children(root)
+        if children==set():
+            newick=str(root)
+        else:
+            newick='('
+            for child in children:
+                x=self.get_newick(child)+','
+                newick+=x
+
+            y=newick[0:len(newick)-1] #delete last character, which is a comma
+            newick=y+')'
+            newick+=str(root)
+        return newick
