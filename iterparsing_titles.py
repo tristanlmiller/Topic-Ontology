@@ -24,7 +24,7 @@ import pickle
 
 def api_to_df(titlefile='en_wikipedia_titles.pkl', nsample=10000): 
     with open("iterparsing_titles.log", "a") as logfile:
-        logfile.write(str(datetime.datetime.today())+'\n'+titlefile+'\n'+nsample)
+        logfile.write(str(datetime.datetime.today())+'\n'+titlefile+'\n'+str(nsample))
     titles =  get_titles(titlefile) 
     random.seed(8685)
     titles = random.sample(titles, nsample)
