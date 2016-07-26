@@ -22,20 +22,20 @@ import sys
 import datetime
 import pickle
 
-def api_to_df(titlefile='en_wikipedia_titles.pkl', nsample=10000): 
-    with open("iterparsing_titles.log", "a") as logfile:
+def api_to_df(titlefile='en_wikipedia_titles.pkl', nsample=10000, subname=''): 
+    with open("iterparsing_titles"+subname+".log", "a") as logfile:
         logfile.write(str(datetime.datetime.today())+'\n'+titlefile+'\n'+str(nsample)+'\n')
     titles =  get_titles(titlefile) 
     random.seed(8685)
     titles = random.sample(titles, nsample)
     newtitles, text, links = get_text(titles)
-    with open(titlefile+'_df_'+str(nsample)+'_comp.pkl','wb') as f:
+    with open(titlefile+'_df_'+str(nsample)+subname+'_comp.pkl','wb') as f:
         pickle.dump(newtitles,f)
         pickle.dump(text,f)
         pickle.dump(links,f)
     df = get_dataframe(newtitles, text, links)
-    df.to_pickle(titlefile+'_df_'+str(nsample)+'.pkl')
-    with open("iterparsing_titles.log", "a") as logfile:
+    df.to_pickle(titlefile+'_df_'+str(nsample)+subname+'.pkl')
+    with open("iterparsing_titles"+subname+".log", "a") as logfile:
         logfile.write("Complete at " + str(datetime.datetime.today()) + '\n')
     return df, newtitles, text, links
 
@@ -53,10 +53,10 @@ def get_text(input_titles):
             links.append(plinks)
             counter += 1
             if counter % 100 == 0:
-                with open("iterparsing_titles.log", "a") as logfile:
+                with open("iterparsing_titles"+subname+".log", "a") as logfile:
                     logfile.write(str(counter) + " titles have data at " + str(datetime.datetime.today())+'\n')
         except Exception:
-            with open("iterparsing_titles.log", "a") as logfile:
+            with open("iterparsing_titles"+subname+".log", "a") as logfile:
                 logfile.write(title + " : does not appear to have viable summary or internal links. Maybe it's a stub?\n")
             pass
     return titles, text, links
