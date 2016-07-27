@@ -28,7 +28,7 @@ def api_to_df(titlefile='en_wikipedia_titles.pkl', nsample=10000, subname=''):
     titles =  get_titles(titlefile) 
     random.seed(8685)
     titles = random.sample(titles, nsample)
-    newtitles, text, links = get_text(titles)
+    newtitles, text, links = get_text(titles, subname)
     with open(titlefile+'_df_'+str(nsample)+subname+'_comp.pkl','wb') as f:
         pickle.dump(newtitles,f)
         pickle.dump(text,f)
@@ -39,7 +39,7 @@ def api_to_df(titlefile='en_wikipedia_titles.pkl', nsample=10000, subname=''):
         logfile.write("Complete at " + str(datetime.datetime.today()) + '\n')
     return df, newtitles, text, links
 
-def get_text(input_titles):
+def get_text(input_titles, subname):
     titles = []
     text = []
     links = []
