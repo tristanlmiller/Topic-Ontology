@@ -143,7 +143,7 @@ class Iterative_KMeans:
         return self.get_final_labels(df) #return vector of tuples
 
 
-class Cluster_Tree: #this class reads the vector of cluster labels created by Iterative_KMeans.Run() and creates a tree
+class Cluster_Tree(TreeNode): #this class reads the vector of cluster labels created by Iterative_KMeans.Run() and creates a tree
     def __init__(self, label_vector):
         self.nodes=set(label_vector)#the label vector might not contain all internal nodes, since it only records the *final* cluster label of each article
         for node in self.nodes: #add internal nodes not in label_vector
@@ -188,3 +188,16 @@ class Cluster_Tree: #this class reads the vector of cluster labels created by It
             newick=y+')'
             newick+=str(root)
         return newick
+
+    def get_Root_as_TreeNode(self): #return root as TreeNode class
+        Root=TreeNode(list((0,)))
+        current_node=(0,)
+        current_TN_node=Root
+        i=1
+        while i<9:
+            for m in Root.iter_leaves():
+                for n in self.nodes:
+                    if m.data==list(n[0:len(m.data)]) and len(m.data)==len(n)-1:
+                        m.append(TreeNode(list(n)))
+            i+=1
+        return Root
