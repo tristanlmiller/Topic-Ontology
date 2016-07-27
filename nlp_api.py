@@ -21,7 +21,7 @@ import os
 def proc_text(pklname):
     df = pickle.load(open(pklname,'rb'))
     df['proctext'] = df['text'].apply(lambda x: para_to_words(x) )
-    df['proclinks'] = df['links'].apply(lambda x: para_to_words(' '.join(x)))
+    df['proclinks'] = df['links'].apply(lambda x: ' '.join([item.lower().replace (" ", "_") for item in x]))
     pickle.dump(df, open(os.path.splitext(pklname)[0]+'_nlp.pkl','wb'))
     return df
 
