@@ -194,7 +194,7 @@ class Cluster_Tree(TreeNode): #this class reads the vector of cluster labels cre
         current_node=(0,)
         current_TN_node=Root
         i=1
-        while i<9:
+        while i<self.max_depth+1:
             for m in Root.iter_leaves():
                 for n in self.nodes:
                     if m.data==list(n[0:len(m.data)]) and len(m.data)==len(n)-1:
