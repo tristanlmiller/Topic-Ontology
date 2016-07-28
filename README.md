@@ -16,17 +16,17 @@ This project is an experiment using Python to parse text and run classification 
 
 
 #### Order
-iterparsing_titles.py:
- -"api_to_df()" reads "en_wikipedia_titles.pkl.bz2" which is a pickled containing all titles in the English Wikipedia and produces a data frame containing title, text and links for these articles.
+1. iterparsing_titles.py:
+ - "api_to_df()" reads "en_wikipedia_titles.pkl.bz2" which is a pickled containing all titles in the English Wikipedia and produces a data frame containing title, text and links for these articles.
 
-nlp_api.py:
- -"proc_text(pickle)" reads the above df and adds two more columns: a cleaned text (stemmed,...) , and another which cleans links and replaces white space in links with underscore.
+2. nlp_api.py:
+ - "proc_text(pickle)" reads the above df and adds two more columns: a cleaned text (stemmed,...) , and another which cleans links and replaces white space in links with underscore.
 
-Word_clustering.ipynb:
- -vectorize: giving extra weight to links (e.g., just adding three copies of links to the text).
- -TF_IDF: min_df~ 1% (or 5% if we are not doing pca)
- -PCA:  #dim = 400
- -vectorize links alone.
- -Things we save as pickle: term list, link list, TF_DF weighting, PCA Matrix, Final bag of words.
+3. Word_clustering.ipynb:
+ - vectorize: giving extra weight to links (e.g., just adding three copies of links to the text).
+ - TF_IDF: min_df~ 1% (or 5% if we are not doing pca)
+ - PCA:  #dim = 400
+ - vectorize links alone.
+ - Things we save as pickle: term list, link list, TF_DF weighting, PCA Matrix, Final bag of words.
  
  
