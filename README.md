@@ -15,11 +15,18 @@ This project is an experiment using Python to parse text and run classification 
 5. When presented with an article not in the tree, we will perform tf-idf and transpose the article vector into the PCA rotated space. We calculate the distance from the medoids of the clusters, and use this information to place the article in the most similar cluster.
 
 
-#### File Structure
-1. iterparsing_titles.py
-  "api_to_df()" reads "en_wikipedia_titles.pkl.bz2" which is a pickled containing all titles in the English Wikipedia and produces a data frame containing title, text and links for these articles.
+#### Order
+1. iterparsing_titles.py:
+ - "api_to_df()" reads "en_wikipedia_titles.pkl.bz2" which is a pickled containing all titles in the English Wikipedia and produces a data frame containing title, text and links for these articles.
 
-2. nlp_api.py
-  "proc_text(pickle)" reads the above df and adds two more columns: a cleaned text (stemmed,...) , and another which cleans links and replaces white space in links with underscore.
+2. nlp_api.py:
+ - "proc_text(pickle)" reads the above df and adds two more columns: a cleaned text (stemmed,...) , and another which cleans links and replaces white space in links with underscore.
 
-3. 
+3. Word_clustering.ipynb:
+ - vectorize: giving extra weight to links (e.g., just adding three copies of links to the text).
+ - TF_IDF: min_df~ 1% (or 5% if we are not doing pca)
+ - PCA:  #dim = 400
+ - vectorize links alone.
+ - Things we save as pickle: term list, link list, TF_DF weighting, PCA Matrix, Final bag of words.
+ 
+ 
