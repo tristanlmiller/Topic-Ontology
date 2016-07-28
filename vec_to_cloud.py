@@ -18,6 +18,7 @@ def vec2cloud(pkltf = 'Tfidf_Matrix.pkl',labpkl='Feature_List.pkl' ):
         wc = WordCloud(background_color="black")
         wc = wc.generate(word_array[i])
         wc.to_file("cloud"+str(i)+".png")
+        del wc #this was giving me issues earlier, so hopefully this fixes it
 
 
 def vec2words(pkltf,labpkl ):
