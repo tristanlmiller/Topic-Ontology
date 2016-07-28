@@ -11,4 +11,15 @@ This project is an experiment using Python to parse text and run classification 
 2. We randomly sample to get a subset of these articles, excluding redirects and other non-"pages", for constructing our main tree. The choice of number of articles depends largely on processing constraints. 
 3. We extract summary text for the selected articles and perform natural language processing. We calculate tf-idf to weight the features and perform PCA to maximize information content. We select the first 400 PCs for use in the remaining analysis.  
 4. We perform iterative clustering on the PCA-rotated data, to identify groups of textually similar articles and construct our hierarchy.
+ 
 5. When presented with an article not in the tree, we will perform tf-idf and transpose the article vector into the PCA rotated space. We calculate the distance from the medoids of the clusters, and use this information to place the article in the most similar cluster.
+
+
+#### File Structure
+1. iterparsing_titles.py
+  "api_to_df()" reads "en_wikipedia_titles.pkl.bz2" which is a pickled containing all titles in the English Wikipedia and produces a data frame containing title, text and links for these articles.
+
+2. nlp_api.py
+  "proc_text(pickle)" reads the above df and adds two more columns: a cleaned text (stemmed,...) , and another which cleans links and replaces white space in links with underscore.
+
+3. 
