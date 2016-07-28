@@ -21,23 +21,23 @@ This project is an experiment using Python to parse text and run classification 
 2. nlp_api.py:
  - "proc_text(pickle)" reads the above df and adds two more columns: a cleaned text (stemmed,...) , and another which cleans links and replaces white space in links with underscore.
 
-3. bag_of_words.py:
- - "BagOfWords.pkl", a vectorized form of the text plus links, using TF-IDF weighting.
- - "Tfidf_Matrix.pkl", the TF-IDF weighting used.
- - "Feature_List.pkl", a list of the terms used in the vectorization.
- - "PCA_components.pkl", a dimensionally reduced form of BagOfWords, with #dim = 400.
- - "PCA_matrix.pkl", the matrix used for dimensional reduction.
- - Additionally, we apply the same analysis to just the links, producing "Link_BagOfWords.pkl", "Link_Tfidf_Matrix.pkl", "Link_Feature_List.pkl", "Link_PCA_components.pkl", and "Link_PCA_matrix.pkl"
+3. bag_of_words.py (currently done in Getting Pickles.ipynb)
+ - BagOfWords.pkl - A string for each article, to be vectorized
+ - Tfidf_Matrix.pkl - The vectorized bag of words, with TF-IDF weighting.
+ - Feature_List.pkl - a list of the terms used in the vectorization.
+ - PCA_components.pkl - a dimensionally reduced form of BagOfWords, with #dim = 400.
+ - PCA_matrix.pkl - the matrix used for dimensional reduction.
+ - Additionally, we apply the same analysis to just the links, producing "Corrected_Link_BagOfWords.pkl", "Corrected_Link_Tfidf_Matrix.pkl", "Corrected_Link_Feature_List.pkl", "Corrected_Link_PCA_components.pkl", and "Corrected_Link_PCA_matrix.pkl"
 
 4. Clustering: Two methods are currently being attempted
 
- a. Ward_clustering.py (to come soon): Ward Clustering: (k= # clusters)
-  - c_labels: Nx1 array (N= # docs)
-  - label_tree: binary tree with clusters as leaves
-  - collapsed_tree -> tol~0 seems fine.
-  - cluster_means -> kx400 array.
-  - docs_in_cluster -> kx1 array.
-  - link_means
+ a. Ward_clustering.py
+ - c_labels.pkl - the cluster labels for the first 25k articles.
+ - cluster_means.pkl - the mean of each of the 100 clusters.
+ - ward_tree.pkl - the TreeNode object showing the relationship between clusters.
+ - descriptive_tree.pkl - same as ward_tree, but nodes are named after the most common link.
+ - docs_in_cluster.pkl - the number of documents in each cluster.
+ - link_means.pkl - This is the mean of each cluster in link space.
 
  b. Iterative_Kmeans.py
 
