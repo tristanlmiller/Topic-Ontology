@@ -8,10 +8,10 @@ This project is an experiment using Python to parse text and run classification 
 
 #### Detailed overview
 1. We extract a list of all articles in English Wikipedia from one of the XML Wikipedia dumps located [here](https://dumps.wikimedia.org/enwiki/). We are using the dump from 07-01-2016, as more recent dumps had not been finished at the start of our project. Any MediaWiki-formatted XML should do. (We used a Simple Wikipedia dump as input for testing.)
-2. We randomly sample to get a subset of these articles, excluding redirects and other non-"pages", for constructing our main tree. The choice of number of articles depends largely on processing constraints. 
+2. We randomly sample to get a subset of these articles, excluding redirects and other non-"pages", for constructing our main tree. The choice of number of articles depends largely on processing constraints.
 3. We extract summary text for the selected articles and perform natural language processing. We calculate tf-idf to weight the features and perform PCA to maximize information content. We select the first 400 PCs for use in the remaining analysis.  
 4. We perform iterative clustering on the PCA-rotated data, to identify groups of textually similar articles and construct our hierarchy.
- 
+
 5. When presented with an article not in the tree, we will perform tf-idf and transpose the article vector into the PCA rotated space. We calculate the distance from the medoids of the clusters, and use this information to place the article in the most similar cluster.
 
 
@@ -28,7 +28,7 @@ This project is an experiment using Python to parse text and run classification 
  - PCA:  #dim = 400
  - vectorize links alone.
  - Things we save as pickle: term list, link list, TF_DF weighting, PCA Matrix, Final bag of words.
- 
+
 4. Clustering:
 
  a. Ward_clustering.py (to come soon): Ward Clustering: (k= # clusters)
@@ -37,7 +37,8 @@ This project is an experiment using Python to parse text and run classification 
   - collapsed_tree -> tol~0 seems fine.
   - cluster_means -> kx400 array.
   - docs_in_cluster -> kx1 array.
- 
+  - link_means
+
  b. Iterative_Kmeans.py
 
 5. Tree Visualization
@@ -45,4 +46,3 @@ This project is an experiment using Python to parse text and run classification 
 
 6. t-SNE
 7. Node Visualization
-
