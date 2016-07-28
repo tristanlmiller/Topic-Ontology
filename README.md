@@ -29,4 +29,18 @@ This project is an experiment using Python to parse text and run classification 
  - vectorize links alone.
  - Things we save as pickle: term list, link list, TF_DF weighting, PCA Matrix, Final bag of words.
  
+4.a. Ward_clustering.py (to come soon): Ward Clustering: (k= # clusters)
+ - c_lebels: Nx1 array (N= # docs)
+ - label_tree: binary tree with clusters as leaves
+ - collapsed_tree -> tol~0 seems fine.
+ - cluster_means -> kx400 array.
+ - docs_in_cluster -> kx1 array.
  
+4.b. Iterative_Kmeans.py
+
+5. Tree Visualization
+ - Labeling Nodes: Most common link/word compared to adjacent branches.
+
+6. t-SNE
+7. Node Visualization
+
