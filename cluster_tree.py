@@ -272,7 +272,12 @@ def get_name_tree(label_tree,cm,docs_in_cluster,term_list):
                 child_mean,docs = get_branch_mean(child,cm,docs_in_cluster)
                 #Just subtract the parent mean from the child mean
                 child_mean -= parent_mean
-                child.data = term_list[child_mean.argmax()]
+                
+                df = pd.DataFrame(index=range(len(child_mean)),columns=['term','frequency'])
+                df['term'] = term_list
+                df['frequency'] = child_mean
+                df.sort_values('frequency',inplace=True,ascending=False)
+                child.data = df['term'].tolist()[0] + '/' + df['term'].tolist()[1] + '/' + df['term'].tolist()[2]
     
     return name_tree
     
