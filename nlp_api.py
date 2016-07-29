@@ -24,8 +24,8 @@ def proc_text(pklname):
     df['proctext'] = df['text'].apply(lambda x: para_to_stems(x) )
     df['proclinks'] = df['links'].apply(lambda x: ' '.join([item.lower().replace("-","_").replace(" ", "_").translate(str.maketrans({key: None for key in '().'})) for item in x]))
     pickle.dump(df, open(os.path.splitext(pklname)[0]+'_nlp.pkl','wb'))
-    stem2lemdict = stem2lem(df)
-    pickle.dump(stem2lemdict, open(os.path.splitext(pklname)[0]+'_stem2lem.pkl','wb'))
+    stem2lemdict,words2lemdict = stem2lem(df)
+    pickle.dump((stem2lemdict,words2lemdict), open(os.path.splitext(pklname)[0]+'_stem2lem.pkl','wb'))
     return df
 
 def para_to_words( raw_text ):
@@ -60,8 +60,11 @@ def stem2lem (df):
     alltext = ' '.join(df['text'].apply(lambda x: ' '.join(para_to_words(x)))).replace("\n",' ')
     alltext = ' '.join(set(alltext.split()))
     stem2lemdict = dict()
+    words2lemdict = dict()
     for word in alltext.split():
         stem = PorterStemmer().stem(word)
         if stem not in stem2lemdict:
-            stem2lemdict[stem] = WordNetLemmatizer().lemmatize(word)
-    return stem2lemdict
+            lem = WordNetLemmatizer().lemmatize(word)
+            stem2lemdict[stem] = lem
+            words2lemdict[word] = lem
+    return stem2lemdict, words2lemdict
