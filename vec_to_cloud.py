@@ -15,8 +15,8 @@ from functools import reduce
 from fractions import gcd
 from cluster_tree import TreeNode
 
-def vec2cloud(pkltf = 'Tfidf_Matrix.pkl',clabpkl = "c_labels.pkl", docpkl = "docs_in_cluster.pkl", wardtreepkl = "ward_tree.pkl", labpkl='features.pkl',prefix='' ):
-    word_array = vec2words(pkltf, labpkl, clabpkl, docpkl, wardtreepkl)
+def vec2cloud(pkltf = 'Tfidf_Matrix.pkl',clabpkl = "c_labels.pkl", docpkl = "docs_in_cluster.pkl", treepkl = "ward_tree.pkl", labpkl='features.pkl',prefix='' ):
+    word_array = vec2words(pkltf, labpkl, clabpkl, docpkl, treepkl)
 #    word_array = word_array[0:20] #for testing
     for i in range(len(word_array)):
         wc = WordCloud(background_color='black')
@@ -24,13 +24,13 @@ def vec2cloud(pkltf = 'Tfidf_Matrix.pkl',clabpkl = "c_labels.pkl", docpkl = "doc
         wc.to_file(prefix+'cloud'+str(i)+'.png')
         del wc
 
-def vec2words(pkltf,labpkl,clabpkl, docpkl, wardtreepkl):
-    tree= pickle.load(open(wardtreepkl,"rb"))
+def vec2words(pkltf,labpkl,clabpkl, docpkl, treepkl):
+    tree= pickle.load(open(treepkl,"rb"))
     labs = pickle.load(open(labpkl,'rb'))
     tf = np.empty((len(tree.iter_nodes()),len(labs)))
     clabels = pickle.load(open(clabpkl,'rb'))
     tf_idf = pickle.load(open(pkltf,'rb')).toarray()
-    counter=0;
+    counter = 0;
     clustermeans,docsincluster = cluster_tree.get_means(clabels,tf_idf[:len(clabels),:])
     for node in tree.iter_nodes():
         tf[counter,:],ndocs = cluster_tree.get_branch_mean(node, clustermeans, docsincluster)
