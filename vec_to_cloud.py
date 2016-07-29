@@ -13,10 +13,11 @@ import matplotlib.pyplot as plt
 import os
 from functools import reduce
 from fractions import gcd
+from cluster_tree import TreeNode
 
 def vec2cloud(pkltf = 'Tfidf_Matrix.pkl',clabpkl = "c_labels.pkl", docpkl = "docs_in_cluster.pkl", wardtreepkl = "ward_tree.pkl", labpkl='features.pkl',prefix='' ):
     word_array = vec2words(pkltf, labpkl, clabpkl, docpkl, wardtreepkl)
-    word_array = word_array[0:20] #for testing
+#    word_array = word_array[0:20] #for testing
     for i in range(len(word_array)):
         wc = WordCloud(background_color='black')
         wc = wc.generate(word_array[i])
