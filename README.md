@@ -53,5 +53,5 @@ This project is an experiment using Python to parse text and run classification 
 7. Node Visualization
 
 8. article_classifier.py
-  c = classifier(): initializes
-  c.classify_article(title): run
+  - c = classifier(): initializes
+  - c.classify_article(title): run
