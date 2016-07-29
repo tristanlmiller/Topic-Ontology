@@ -1,6 +1,6 @@
 """
 Created on Mon Jul 11
-Major revisions Jul 27
+Major revisions Jul 27 & Jul 28
 @author: Diya
 
 processing data in pandas data frame
@@ -13,7 +13,7 @@ import numpy
 from bs4 import BeautifulSoup
 import re
 from nltk.corpus import stopwords #assuming nltk is already installed
-from nltk import PorterStemmer
+from nltk import PorterStemmer, WordNetLemmatizer
 import os
 import string
 #import time
@@ -21,9 +21,11 @@ import string
 
 def proc_text(pklname):
     df = pickle.load(open(pklname,'rb'))
-    df['proctext'] = df['text'].apply(lambda x: para_to_words(x) )
+    df['proctext'] = df['text'].apply(lambda x: para_to_stems(x) )
     df['proclinks'] = df['links'].apply(lambda x: ' '.join([item.lower().replace("-","_").replace(" ", "_").translate(str.maketrans({key: None for key in '().'})) for item in x]))
     pickle.dump(df, open(os.path.splitext(pklname)[0]+'_nlp.pkl','wb'))
+    stem2lemdict = stem2lem(df)
+    pickle.dump(stem2lemdict, open(os.path.splitext(pklname)[0]+'_stem2lem.pkl','wb'))
     return df
 
 def para_to_words( raw_text ):
@@ -33,8 +35,13 @@ def para_to_words( raw_text ):
     words = letters_only.lower().split()
     stops = set(stopwords.words("english"))
     meaningful_words = [w for w in words if not w in stops]
+    return meaningful_words
+
+def para_to_stems(raw_text):
+    meaningful_words = para_to_words(raw_text)
     stemmed_words = [PorterStemmer().stem(w) for w in meaningful_words]
     return(" ".join( stemmed_words ))
+
 
 def get_links( raw_text ):
     #Looks for strings starting with [[ and ending with ]], but with no brackets in the middle
@@ -49,3 +56,12 @@ def get_links( raw_text ):
 def get_categories( raw_text ):
     return re.findall("\[\[Category:([^\[\]\|]*)\|?[^\[\]]*\]\]",raw_text)
 
+def stem2lem (df):
+    alltext = ' '.join(df['text'].apply(lambda x: ' '.join(para_to_words(x)))).replace("\n",' ')
+    alltext = ' '.join(set(alltext.split()))
+    stem2lemdict = dict()
+    for word in alltext.split():
+        stem = PorterStemmer().stem(word)
+        if stem not in stem2lemdict:
+            stem2lemdict[stem] = WordNetLemmatizer().lemmatize(word)
+    return stem2lemdict
