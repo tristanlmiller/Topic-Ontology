@@ -21,23 +21,27 @@ This project is an experiment using Python to parse text and run classification 
 2. nlp_api.py:
  - "proc_text(pickle)" reads the above df and adds two more columns: a cleaned text (stemmed,...) , and another which cleans links and replaces white space in links with underscore.
 
-3. bag_of_words.py:
- - "BagOfWords.pkl", a vectorized form of the text plus links, using TF-IDF weighting.
- - "Tfidf_Matrix.pkl", the TF-IDF weighting used.
+3. bag_of_words.py: (currently "Getting Pickles.ipynb")
+ - "BagOfWords.pkl", A list of the strings for each document
+ - "Tfidf_Matrix.pkl", Document-term matrix with TF-IDF weighting
  - "Feature_List.pkl", a list of the terms used in the vectorization.
+ - "features.pkl", the lemmatized form of above
  - "PCA_components.pkl", a dimensionally reduced form of BagOfWords, with #dim = 400.
  - "PCA_matrix.pkl", the matrix used for dimensional reduction.
- - Additionally, we apply the same analysis to just the links, producing "Link_BagOfWords.pkl", "Link_Tfidf_Matrix.pkl", "Link_Feature_List.pkl", "Link_PCA_components.pkl", and "Link_PCA_matrix.pkl"
+ - Additionally, we apply the same analysis to just the links, producing "Corrected_Link_BagOfWords.pkl", "Corrected_Link_Tfidf_Matrix.pkl", "Corrected_Link_Feature_List.pkl", "Corrected_Link_PCA_components.pkl", and "Corrected_Link_PCA_matrix.pkl"
+ - Also create "Tfidf_weights.pkl", which contains information to weigh terms.
 
 4. Clustering: Two methods are currently being attempted
 
- a. Ward_clustering.py (to come soon): Ward Clustering: (k= # clusters)
-  - c_labels: Nx1 array (N= # docs)
-  - label_tree: binary tree with clusters as leaves
-  - collapsed_tree -> tol~0 seems fine.
-  - cluster_means -> kx400 array.
-  - docs_in_cluster -> kx1 array.
-  - link_means
+ a. Ward_clustering.py: ward_cluster()
+    By default analyzes only 25k docs, and makes 500 clusters.
+  - c_labels: assigns the cluster number to each doc
+  - uncollapsed_tree: binary tree with clusters as leaves
+  - ward_tree: collapsed tree
+  - descriptive_tree: tree with a name given to each node
+  - topic_means: each row is the mean of a cluster in PCA space
+  - term_means: same as topic_means, but in term space
+  - docs_in_cluster: Number of docs in each cluster
 
  b. Iterative_Kmeans.py
 
@@ -45,5 +49,9 @@ This project is an experiment using Python to parse text and run classification 
  - Labeling Nodes: Most common link/word compared to adjacent branches.
 
 6. t-SNE
+
 7. Node Visualization
-8. Classification of new articles.
+
+8. article_classifier.py
+  c = classifier(): initializes
+  c.classify_article(title): run
