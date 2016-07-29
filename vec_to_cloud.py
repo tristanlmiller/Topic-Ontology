@@ -23,8 +23,8 @@ def vec2cloud(pkltf = 'Tfidf_Matrix.pkl',clabpkl = "c_labels.pkl", docpkl = "doc
 
 def vec2words(pkltf,labpkl,clabpkl, docpkl, wardtreepkl):
     tree= pickle.load(open(wardtreepkl,"rb"))
-    lab = pickle.load(open(labpkl,'rb'))
-    tf = np.empty((len(tree.iter_nodes()),len(lab)))
+    labs = pickle.load(open(labpkl,'rb'))
+    tf = np.empty((len(tree.iter_nodes()),len(labs)))
     clabels = pickle.load(open(clabpkl,'rb'))
     tf_idf = pickle.load(open(pkltf,'rb')).toarray()
     counter=0;
@@ -33,5 +33,7 @@ def vec2words(pkltf,labpkl,clabpkl, docpkl, wardtreepkl):
         tf[counter,:],ndocs = cluster_tree.get_branch_mean(node, clustermeans, docsincluster)
         counter += 1
     freqInt = np.array(tf/ np.min(tf[np.nonzero(tf)]) , dtype='int')
-    word_array = np.apply_along_axis(lambda b: ' '.join([ item for sublist in [[lab[i]]*b[i] for i in range(len(lab))] for item in sublist]),1,freqInt)
+    word_array = np.apply_along_axis(lambda counts: ' '.join(item for sublist in 
+                                                          ([lab]*count for lab,count in zip(labs,counts)) 
+                                                          for item in sublist),1,freqInt)
     return word_array
