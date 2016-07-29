@@ -11,6 +11,8 @@ import pickle
 import cluster_tree
 import matplotlib.pyplot as plt
 import os
+from functools import reduce
+from fractions import gcd
 
 def vec2cloud(pkltf = 'Tfidf_Matrix.pkl',clabpkl = "c_labels.pkl", docpkl = "docs_in_cluster.pkl", wardtreepkl = "ward_tree.pkl", labpkl='features.pkl',prefix='' ):
     word_array = vec2words(pkltf, labpkl, clabpkl, docpkl, wardtreepkl)
@@ -32,7 +34,8 @@ def vec2words(pkltf,labpkl,clabpkl, docpkl, wardtreepkl):
     for node in tree.iter_nodes():
         tf[counter,:],ndocs = cluster_tree.get_branch_mean(node, clustermeans, docsincluster)
         counter += 1
-    freqInt = np.array(tf/ np.min(tf[np.nonzero(tf)]) , dtype='int')
+    freqInt = np.array(tf*1e5 , dtype='int')
+    freqInt = np.apply_along_axis(lambda counts: counts/reduce(gcd,counts.tolist()) if reduce(gcd,counts.tolist()) else counts,1,freqInt).astype('int')
     word_array = np.apply_along_axis(lambda counts: ' '.join(item for sublist in 
                                                           ([lab]*count for lab,count in zip(labs,counts)) 
                                                           for item in sublist),1,freqInt)
