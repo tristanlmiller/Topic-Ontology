@@ -18,7 +18,7 @@ from sklearn.cluster import AgglomerativeClustering
 
 def ward_cluster(file_topic_matrix="PCA_matrix.pkl",
                  file_term_matrix="Tfidf_Matrix.pkl",
-                 file_term_list="Feature_List.pkl",n_clusters=500,
+                 file_term_list="features.pkl",n_clusters=500,
                  truncate=25000,output="",tolerance=-0.2):
     #Only keep the first 10k articles by default.  I couldn't get it to run with 50k.
     #However, I got it with 25k, and it took 45 minutes.
