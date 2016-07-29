@@ -11,8 +11,8 @@ import pickle
 import cluster_tree
 import matplotlib.pyplot as plt
 
-def vec2cloud(pkltf = 'Tfidf_Matrix.pkl',labpkl='Feature_List.pkl' ):
-    word_array = vec2words(pkltf, labpkl)
+def vec2cloud(pkltf = 'Tfidf_Matrix.pkl',cmeanspkl = "cluster_means.pkl", docpkl = "docs_in_cluster.pkl", wardtreepkl = "ward_tree.pkl", labpkl='Feature_List.pkl' ):
+    word_array = vec2words(pkltf, labpkl, cmeanspkl, docpkl, wardtreepkl)
     word_array = word_array[0:20] #for testing
     for i in range(len(word_array)):
         wc = WordCloud(background_color="black")
@@ -20,10 +20,17 @@ def vec2cloud(pkltf = 'Tfidf_Matrix.pkl',labpkl='Feature_List.pkl' ):
         wc.to_file("cloud"+str(i)+".png")
         del wc #this was giving me issues earlier, so hopefully this fixes it
 
-
-def vec2words(pkltf,labpkl ):
-    tf = pickle.load(open(pkltf,'rb')).toarray()
+def vec2words(pkltf,labpkl , cmeanspkl, docpkl, wardtreepkl):
+    tree= pickle.load(open(wardtreepkl,"rb"))
     lab = pickle.load(open(labpkl,'rb'))
+    clustermeans = pickle.load(open(cmeanspkl,"rb"))
+    docsincluster=pickle.load(open(docpkl,"rb"))
+    tf = np.empty((len(tree.iternodes()),len(lab)))
+    counter=0;
+    for node in tree.iter_nodes():
+        tf[counter],ndocs = cluster_tree.get_branch_mean(node, clustermeans, docsincluster)
+        counter += 1
+    #tf = pickle.load(open(pkltf,'rb')).toarray()
     freqInt = np.array(tf/ np.min(tf[np.nonzero(tf)]) , dtype='int')
     word_array = np.apply_along_axis(lambda b: ' '.join([ item for sublist in [[lab[i]]*b[i] for i in range(len(lab))] for item in sublist]),1,freqInt)
     return word_array
