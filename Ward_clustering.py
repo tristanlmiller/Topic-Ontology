@@ -60,9 +60,9 @@ def ward_cluster(file_topic_matrix="PCA_matrix.pkl",
     #descriptive_tree the same as ward_tree, except that nodes are named after most common links
     pd.to_pickle(descriptive_tree,output+'descriptive_tree.pkl')
     #cluster_means are the vectors (in the PCA space) of each cluster
-    pd.to_pickle(cluster_means,output+'cluster_means.pkl')
+    pd.to_pickle(topic_means,output+'topic_means.pkl')
     #link_means are the vectors (in link space) of each cluster
-    pd.to_pickle(link_means,output+'link_means.pkl')
+    pd.to_pickle(term_means,output+'term_means.pkl')
     #docs_in_cluster tells you the size of each cluster
     pd.to_pickle(docs_in_cluster,output+'docs_in_cluster.pkl')
     processing_time = (time.time() - start_time)/60
