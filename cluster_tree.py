@@ -8,6 +8,7 @@ I'm writing functions related to the tree output of agglomerative clustering
 """
 import numpy as np
 from scipy.spatial.distance import euclidean
+import pandas as pd
 
 #sklearn's agglomerative clustering returns trees in a weird format
 #here I convert to the more intuitive format, where each node is a list of its children
