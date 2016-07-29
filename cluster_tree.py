@@ -94,6 +94,8 @@ class TreeNode(object):
             for child in self.children:
                 tree_string += str(child)[:-1] + ','
             tree_string = tree_string[:-1] + ')'
+            if self.data is not None:
+                tree_string += self.data
         else:
             tree_string = str(self.data)
         tree_string += ';'
@@ -280,6 +282,13 @@ def get_name_tree(label_tree,cm,docs_in_cluster,term_list):
                 df.sort_values('frequency',inplace=True,ascending=False)
                 child.data = df['term'].tolist()[0] + '/' + df['term'].tolist()[1] + '/' + df['term'].tolist()[2]
     
+    #Add index to each node
+    i = 0
+    for node in name_tree.iter_nodes():
+        if node.data == None:
+            node.data = ""
+        node.data = str(i) + "_" + node.data
+        i += 1
     return name_tree
     
     
