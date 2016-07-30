@@ -15,7 +15,7 @@ from functools import reduce
 from fractions import gcd
 from cluster_tree import TreeNode
 
-def vec2cloud(pkltf = 'Tfidf_Matrix.pkl',clabpkl = "c_labels.pkl", docpkl = "docs_in_cluster.pkl", treepkl = "ward_tree.pkl", labpkl='features.pkl',prefix='' ):
+def vec2cloud(pkltf = 'Tfidf_Matrix.pkl',clabpkl = "c_labels.pkl", docpkl = "docs_in_cluster.pkl", treepkl = "ward_tree.pkl", labpkl='features_rev.pkl',prefix='' ):
     word_array = vec2words(pkltf, labpkl, clabpkl, docpkl, treepkl)
 #    word_array = word_array[0:20] #for testing
     for i in range(len(word_array)):
