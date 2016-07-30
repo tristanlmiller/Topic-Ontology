@@ -19,7 +19,7 @@ def vec2cloud(pkltf = 'Tfidf_Matrix.pkl',clabpkl = "c_labels.pkl", docpkl = "doc
     word_array = vec2words(pkltf, labpkl, clabpkl, docpkl, treepkl)
 #    word_array = word_array[0:20] #for testing
     for i in range(len(word_array)):
-        wc = WordCloud(background_color='black')
+        wc = WordCloud(background_color='black', width = 800, height = 400)
         wc = wc.generate(word_array[i])
         wc.to_file(prefix+'cloud'+str(i)+'.png')
         del wc
