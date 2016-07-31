@@ -1,3 +1,5 @@
+<img src = "https://github.com/tristanlmiller/Topic-Ontology/blob/6d475d32fe21a31135cd1cd503c2e7bceaf992d9/ward_cloud377.png?raw=true", height=300>
+
 # Topic-Ontology
 
 Project by Diya Das ([@InfH](https://github.com/InfH)), Tristan Miller ([@tristanlmiller](https://github.com/tristanlmiller/)), Ali Sanaei ([@asanaei](https://github.com/asanaei)), and Simon Segert ([@SimonSegert](https://github.com/simonsegert))
