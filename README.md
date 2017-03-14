@@ -1,4 +1,4 @@
-<img src = "https://raw.githubusercontent.com/tristanlmiller/Topic-Ontology/master/ward_cloud377.png", height=300>
+![Data science cloud](../6d475d32fe21a31135cd1cd503c2e7bceaf992d9/ward_cloud377.png?raw=true)
 
 # Topic-Ontology
 
