@@ -1,4 +1,4 @@
-<img src = "https://github.com/tristanlmiller/Topic-Ontology/blob/6d475d32fe21a31135cd1cd503c2e7bceaf992d9/ward_butt377.png?raw=true", height=300>
+<img src = "https://raw.githubusercontent.com/tristanlmiller/Topic-Ontology/master/ward_cloud377.png", height=300>
 
 # Topic-Ontology
 
